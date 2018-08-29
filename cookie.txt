@@ -1,7 +1,0 @@
-# Netscape HTTP Cookie File
-# http://curl.haxx.se/rfc/cookie_spec.html
-# This is a generated file!  Do not edit.
-
-.youtube.com	TRUE	/	FALSE	1535551184	GPS	1
-.youtube.com	TRUE	/	FALSE	1540733754	PREF	f1=50000000&hl=en
-.youtube.com	TRUE	/	FALSE	1551101384	VISITOR_INFO1_LIVE	jAaoSO6SgrQ
