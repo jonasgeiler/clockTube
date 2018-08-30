@@ -3,7 +3,7 @@
 
 local http = require('socket.http')
 --local https = require('ssl.https')
-local json = assert(loadfile "lib/json.lua")()
+local json = require('lib.json')
 
 function encodeURI(str)
 	if (str) then
