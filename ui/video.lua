@@ -1,6 +1,7 @@
 local class = require('lib.class')
 local formatNumber = require('lib.formatNumber')
 local fonts = require('assets.fonts._all')
+local request = require('lib.request')
 
 local Video = class{
 	username = '',
@@ -26,7 +27,7 @@ function newImageFromURL(url, name)
 end
 
 function Video:init(data)
-	--video.data.thumbnail = newImageFromURL('https://i.ytimg.com/vi/9KoAESKcyLg/hqdefault.png?sqp=-oaymwEYCNIBEHZIVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLCzwd-VSXo8KrFarUqHXW8U9rDzZA', 'thumbnail.png')
+	self.thumbnail = newImageFromURL('https://i.ytimg.com/vi/9KoAESKcyLg/hqdefault.png?sqp=-oaymwEYCNIBEHZIVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLCzwd-VSXo8KrFarUqHXW8U9rDzZA', 'thumbnail.png')
 	self.username = love.graphics.newText(fonts.SegoeUI_light, data.username)
 	self.views = love.graphics.newText(fonts.SegoeUI_light, formatNumber(data.views, 0) .. ' Views')
 	
