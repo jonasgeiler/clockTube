@@ -11,7 +11,6 @@ function love.conf(t)
 	t.modules.mouse = false
 	t.modules.audio = false
 	t.modules.filesystem = false
-	t.modules.image = false
 	t.modules.touch = false
 	
 	t.window.resizable = false

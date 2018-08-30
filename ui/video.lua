@@ -13,8 +13,8 @@ local Video = class{
 		width = 300,
 		height = 90,
 		
-		title_wrap_length = 28, -- when to add a newline
-		title_cut_length = 52 -- when to cut the title and add "..."
+		title_wrap_length = 32, -- when to add a newline
+		title_cut_length = 60 -- when to cut the title and add "..."
 	}
 }
 
@@ -25,8 +25,8 @@ end
 
 function Video:init(data)
 	--video.data.thumbnail = newImageFromURL('https://i.ytimg.com/vi/9KoAESKcyLg/hqdefault.png?sqp=-oaymwEYCNIBEHZIVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLCzwd-VSXo8KrFarUqHXW8U9rDzZA', 'thumbnail.png')
-	self.username = love.graphics.newText(fonts.SegeoUI_light, data.username)
-	self.views = love.graphics.newText(fonts.SegeoUI_light, formatNumber(data.views, 0) .. ' Views')
+	self.username = love.graphics.newText(fonts.SegoeUI_light, data.username)
+	self.views = love.graphics.newText(fonts.SegoeUI_light, formatNumber(data.views, 0) .. ' Views')
 	
 	if data.title:len() > self.specs.title_cut_length then
 		data.title = data.title:sub(0, self.specs.title_cut_length) .. "..."
@@ -36,7 +36,7 @@ function Video:init(data)
 		data.title = data.title:sub(0, self.specs.title_wrap_length) .. "\n" .. data.title:sub(self.specs.title_wrap_length+1)
 	end
 	
-	self.title = love.graphics.newText(fonts.SegeoUI_bold, data.title)
+	self.title = love.graphics.newText(fonts.SegoeUI_bold, data.title)
 end
 
 function Video:draw(x, y)

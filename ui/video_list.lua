@@ -19,7 +19,7 @@ function VideoList:init(videos)
 			url = 'https://youtube.com/watch?q=123'
 		},
 		{
-			title = 'This is also a video - Episode #2 [GERMAN] - this is a long title woow',
+			title = 'This is also a video - Episode #2 [GERMAN] - thisisalongtitlewoowcoolvery',
 			username = 'Skayo',
 			views = 10001,
 			thumbnail = '',
@@ -27,13 +27,13 @@ function VideoList:init(videos)
 		}
 	}
 	
-	for i,videoData in pairs(self.videos) do
+	for i,videoData in ipairs(self.videos) do
 		self.videos[i].obj = Video(videoData)
 	end
 end
 
 function VideoList:draw(x, y)
-	for i,videoData in pairs(self.videos) do
+	for i,videoData in ipairs(self.videos) do
 		videoData.obj:draw(x, y+100*(i-1))
 	end
 end
