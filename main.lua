@@ -1,7 +1,9 @@
+-- LOADING SCREEN --
 love.graphics.clear()
 love.graphics.setBackgroundColor(255,255,255)
 love.graphics.print("Loading...", 10, 10)
 love.graphics.present()
+--
 
 local states = require('states._all')
 

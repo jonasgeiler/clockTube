@@ -100,6 +100,9 @@ function VideoList:keypressed(key)
 		if self.selected > #self.videos then
 			self.selected = #self.videos
 		end
+	elseif key == "j" then
+		love.window.close()
+		os.execute('./playVideo.sh ' .. self.videos[self.selected].url)
 	end
 end
 
