@@ -7,6 +7,7 @@ function love.load()
 end
 
 function love.draw()
+	love.graphics.setWireframe(false)
 	states[currState]:draw()
 end
 
@@ -18,6 +19,6 @@ function love.keypressed(k)
 	if k == 'escape' then
 		love.event.quit()
 	else
-		states[currState].keypressed(k)
+		states[currState]:keypressed(k)
 	end
 end

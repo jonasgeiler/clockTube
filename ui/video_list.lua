@@ -6,7 +6,8 @@ local VideoList = class{
 		width = 300,
 		height = 90
 	},
-	videos = {}
+	videos = {},
+	selected = 1
 }
 
 function VideoList:init(videos)
@@ -16,14 +17,16 @@ function VideoList:init(videos)
 			username = 'Skayo',
 			views = 10000,
 			thumbnail = '',
-			url = 'https://youtube.com/watch?q=123'
+			url = 'https://youtube.com/watch?q=123',
+			selected = true
 		},
 		{
 			title = 'This is also a video - Episode #2 [GERMAN] - thisisalongtitlewoowcoolvery',
 			username = 'Skayo',
 			views = 10001,
 			thumbnail = '',
-			url = 'https://youtube.com/watch?q=1234'
+			url = 'https://youtube.com/watch?q=1234',
+			selected = false
 		}
 	}
 	
@@ -33,8 +36,19 @@ function VideoList:init(videos)
 end
 
 function VideoList:draw(x, y)
+	local currOffset = 0
 	for i,videoData in ipairs(self.videos) do
-		videoData.obj:draw(x, y+100*(i-1))
+		videoData.obj:draw(x, y + currOffset, (self.selected == i))
+		
+		currOffset = currOffset + videoData.obj.specs.height + 10
+	end
+end
+
+function VideoList:keypressed(key)
+	if key == "up" then
+		self.selected = self.selected - 1
+	elseif key == "down" then
+		self.selected = self.selected + 1
 	end
 end
 

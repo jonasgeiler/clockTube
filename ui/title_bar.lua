@@ -31,6 +31,7 @@ function TitleBar:draw()
 	love.graphics.setColor(228,228,228)
 	love.graphics.rectangle('fill', self.specs.x, self.specs.y, self.specs.width, self.specs.height)
 	love.graphics.setColor(169,169,169)
+	love.graphics.setLineStyle('rough')
 	love.graphics.line(
 		self.specs.x, 
 		self.specs.y + self.specs.height,

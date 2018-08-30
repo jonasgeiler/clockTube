@@ -9,10 +9,10 @@ local Home = class{
 
 function Home:init()
 	self.videoList = VideoList({})
-	self.titleBar = TitleBar('clockTube - Home', {
+	self.titleBar = TitleBar('Home', {
 		{
 			key = 'A',
-			label = 'Select'
+			label = 'Play'
 		},
 		{
 			key = 'Y',
@@ -39,7 +39,7 @@ function Home:update()
 end
 
 function Home:keypressed(k)
-	
+	self.videoList:keypressed(k)
 end
 
 return Home
