@@ -22,12 +22,12 @@ local Video = class{
 }
 
 function newImageFromURL(url, name)
-	local rawThumbnailData = request.get(url)
-	return love.graphics.newImage(love.filesystem.newFileData(rawThumbnailData, name:gsub("_", "."), "base64"))
+	local rawThumbnailData = request('GET', url)
+	return love.graphics.newImage(love.filesystem.newFileData(rawThumbnailData, name))
 end
 
 function Video:init(data)
-	self.thumbnail = newImageFromURL('https://i.ytimg.com/vi/9KoAESKcyLg/hqdefault.png?sqp=-oaymwEYCNIBEHZIVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLCzwd-VSXo8KrFarUqHXW8U9rDzZA', 'thumbnail.png')
+	self.thumbnail = newImageFromURL('http://i.ytimg.com/vi/9KoAESKcyLg/hqdefault.png?sqp=-oaymwEYCNIBEHZIVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLCzwd-VSXo8KrFarUqHXW8U9rDzZA', 'thumbnail.png')
 	self.username = love.graphics.newText(fonts.SegoeUI_light, data.username)
 	self.views = love.graphics.newText(fonts.SegoeUI_light, formatNumber(data.views, 0) .. ' Views')
 	
@@ -68,7 +68,8 @@ end
 function Video:draw(x, y, selected)
 	-- Thumbnail
 	love.graphics.setColor(100,100,100)
-	love.graphics.rectangle('fill', x, y, 120, 90)
+	--love.graphics.rectangle('fill', x, y, 120, 90)
+	love.graphics.draw(self.thumbnail, x, y)
 	
 	-- Title
 	love.graphics.setColor(20,20,20)

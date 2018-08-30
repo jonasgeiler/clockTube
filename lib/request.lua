@@ -1,14 +1,26 @@
 -- SIMPLE YOUTUBE API WRAPPER --
 --       made by Skayo        --
 
-json = require('lib.json')
+local http = require('socket.http')
+--local https = require('ssl.https')
+local json = require('lib.json')
 
-local request = {}
+return function(...)
+	local args = {...}
+	local reqbody = args[3] or ''
 
--- HTTP GET request
-function request.get(url)
-	local requestHandler = io.popen('curl ' .. url, 'r')
-	return requestHandler:read('*l')
+	local respbody = {}
+
+	http.request {
+		method = args[1],
+		url = args[2],
+		source = ltn12.source.string(reqbody),
+		headers = {
+			['Content-Type'] = 'application/x-www-form-urlencoded',
+			['Content-Length'] = #reqbody
+		},
+		sink = ltn12.sink.table(respbody)
+	}
+
+	return table.concat(respbody)
 end
-
-return request
