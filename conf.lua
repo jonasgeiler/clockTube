@@ -1,6 +1,6 @@
---Configuration File
+-- Love Configuration
 function love.conf(t)
-	t.title = "Calculator"
+	t.title = "clockTube"
 	t.window.width = 320
 	t.window.height = 240
 
@@ -16,3 +16,8 @@ function love.conf(t)
 	t.window.resizable = false
 	t.window.borderless = true
 end
+
+-- Other Project Configuration
+return {
+	youtubeApiKey = 'AIzaSyArxKA2rpFVsCTWDFmV3-02ck7h-DCXEkM'
+}

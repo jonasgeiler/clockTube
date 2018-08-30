@@ -1,7 +1,7 @@
 local class = require('lib.class')
 local formatNumber = require('lib.formatNumber')
 local fonts = require('assets.fonts._all')
-local request = require('lib.request')
+local http = require('socket.http')
 
 local Video = class{
 	username = '',
@@ -22,12 +22,34 @@ local Video = class{
 }
 
 function newImageFromURL(url, name)
-	local rawThumbnailData = request('GET', url)
-	return love.graphics.newImage(love.filesystem.newFileData(rawThumbnailData, name))
+	local rawThumbnailData = http.request(url)
+	local fileData = love.filesystem.newFileData(rawThumbnailData, 'thumbnail.png', 'file')
+	local imageData = love.image.newImageData(fileData)
+	return love.graphics.newImage(imageData)
+end
+
+function fixUTF8(s, replacement)
+  local p, len, invalid = 1, #s, {}
+  while p <= len do
+    if     p == s:find("[%z\1-\127]", p) then p = p + 1
+    elseif p == s:find("[\194-\223][\128-\191]", p) then p = p + 2
+    elseif p == s:find(       "\224[\160-\191][\128-\191]", p)
+        or p == s:find("[\225-\236][\128-\191][\128-\191]", p)
+        or p == s:find(       "\237[\128-\159][\128-\191]", p)
+        or p == s:find("[\238-\239][\128-\191][\128-\191]", p) then p = p + 3
+    elseif p == s:find(       "\240[\144-\191][\128-\191][\128-\191]", p)
+        or p == s:find("[\241-\243][\128-\191][\128-\191][\128-\191]", p)
+        or p == s:find(       "\244[\128-\143][\128-\191][\128-\191]", p) then p = p + 4
+    else
+      s = s:sub(1, p-1)..replacement..s:sub(p+1)
+      table.insert(invalid, p)
+    end
+  end
+  return s, invalid
 end
 
 function Video:init(data)
-	self.thumbnail = newImageFromURL('http://i.ytimg.com/vi/9KoAESKcyLg/hqdefault.png?sqp=-oaymwEYCNIBEHZIVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLCzwd-VSXo8KrFarUqHXW8U9rDzZA', 'thumbnail.png')
+	self.thumbnail = newImageFromURL(data.thumbnail, 'thumbnail.png')
 	self.username = love.graphics.newText(fonts.SegoeUI_light, data.username)
 	self.views = love.graphics.newText(fonts.SegoeUI_light, formatNumber(data.views, 0) .. ' Views')
 	
@@ -39,7 +61,7 @@ function Video:init(data)
 		data.title = data.title:sub(0, self.specs.title_wrap_length) .. "\n" .. data.title:sub(self.specs.title_wrap_length+1)
 	end
 	
-	self.title = love.graphics.newText(fonts.SegoeUI_bold, data.title)
+	self.title = love.graphics.newText(fonts.SegoeUI_bold, fixUTF8(data.title, ''))
 end
 
 function drawDashedLine(x1, y1, x2, y2, min, max)
@@ -67,8 +89,7 @@ end
 
 function Video:draw(x, y, selected)
 	-- Thumbnail
-	love.graphics.setColor(100,100,100)
-	--love.graphics.rectangle('fill', x, y, 120, 90)
+	love.graphics.setColor(255,255,255,255)
 	love.graphics.draw(self.thumbnail, x, y)
 	
 	-- Title

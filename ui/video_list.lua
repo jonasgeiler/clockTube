@@ -1,4 +1,6 @@
 local class = require('lib.class')
+local config = require('conf')
+local request = require('lib.request')
 local Video = require('ui.video')
 
 local VideoList = class{
@@ -15,8 +17,42 @@ local VideoList = class{
 	scroll = 0
 }
 
-function VideoList:init(videos)
-	self.videos = videos
+function getTrendingVideos()
+	local response = request(
+		'https://www.googleapis.com/youtube/v3/videos', 
+		{
+			key = config.youtubeApiKey,
+			part = 'snippet,statistics',
+			chart = 'mostPopular',
+			maxResults = 10
+		},
+		true
+	)
+	
+	local videos = {}
+	
+	for i,video in pairs(response.items) do
+		local newVideo = {}
+		newVideo.title = video.snippet.title
+		newVideo.username = video.snippet.channelTitle
+		newVideo.thumbnail = video.snippet.thumbnails.default.url
+		newVideo.views = tonumber(video.statistics.viewCount)
+		newVideo.url = 'https://www.youtube.com/watch?v=' .. video.id
+		
+		videos[i] = newVideo
+	end
+	
+	return videos
+end
+
+function VideoList:init(list, data)
+	if list == 'trending' then
+		self.videos = getTrendingVideos()
+	elseif list == 'search' then
+		self.videos = getVideosBySearch(data)
+	elseif list == 'user' then
+		self.videos = getVideosByUser(data)
+	end
 	
 	for i,videoData in ipairs(self.videos) do
 		self.videos[i].obj = Video(videoData)

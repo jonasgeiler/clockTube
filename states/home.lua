@@ -8,56 +8,7 @@ local Home = class{
 }
 
 function Home:init()
-	self.videoList = VideoList({
-		{
-			title = 'This is a video - Episode #1 [GERMAN]',
-			username = 'Skayo',
-			views = 10000,
-			thumbnail = '',
-			url = 'https://youtube.com/watch?q=123',
-			selected = true
-		},
-		{
-			title = 'This is also a video - Episode #2 [GERMAN] - thisisalongtitlewoowcoolvery',
-			username = 'Skayo',
-			views = 10001,
-			thumbnail = '',
-			url = 'https://youtube.com/watch?q=1234',
-			selected = false
-		},
-		{
-			title = 'This is a video - Episode #1 [GERMAN]',
-			username = 'Skayo',
-			views = 10000,
-			thumbnail = '',
-			url = 'https://youtube.com/watch?q=123',
-			selected = true
-		},
-		{
-			title = 'This is also a video - Episode #2 [GERMAN] - thisisalongtitlewoowcoolvery',
-			username = 'Skayo',
-			views = 10001,
-			thumbnail = '',
-			url = 'https://youtube.com/watch?q=1234',
-			selected = false
-		},
-		{
-			title = 'This is a video - Episode #1 [GERMAN]',
-			username = 'Skayo',
-			views = 10000,
-			thumbnail = '',
-			url = 'https://youtube.com/watch?q=123',
-			selected = true
-		},
-		{
-			title = 'This is also a video - Episode #2 [GERMAN] - thisisalongtitlewoowcoolvery',
-			username = 'Skayo',
-			views = 10001,
-			thumbnail = '',
-			url = 'https://youtube.com/watch?q=1234',
-			selected = false
-		}
-	})
+	self.videoList = VideoList('trending')
 	
 	self.titleBar = TitleBar('Home', {
 		{
