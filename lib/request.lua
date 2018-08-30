@@ -1,7 +1,7 @@
 -- SIMPLE YOUTUBE API WRAPPER --
 --       made by Skayo        --
 
-json = require('json')()
+json = require('lib.json')()
 
 local request = {}
 
