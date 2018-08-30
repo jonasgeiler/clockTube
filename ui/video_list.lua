@@ -4,7 +4,11 @@ local Video = require('ui.video')
 local VideoList = class{
 	specs = {
 		width = 300,
-		height = 90
+		height = 90,
+		
+		scrollingSpeed = 5, -- how fast scroll (setting this too high can cause unexpected scrolling offsets)
+		topOffsetScroll = 30, -- when scrolling up into selection, how much space between selected video and top
+		bottomOffsetScroll = 20 -- when scrolling down into selection, how much space between selected video and bottom
 	},
 	videos = {},
 	selected = 1,
@@ -22,20 +26,26 @@ end
 function VideoList:draw(x, y)
 	y = y + self.scroll
 	
+	local _,screenHeight = love.graphics.getDimensions()
+	
 	local currOffset = 0
 	for i,videoData in ipairs(self.videos) do
+		
 		if self.selected == i then -- if current video is selected
-			local _,screenHeight = love.graphics.getDimensions()
-			if y + currOffset + videoData.obj.specs.height + self.scroll + 20 > screenHeight then
-				self.scroll = self.scroll - 5
+			if y + currOffset + videoData.obj.specs.height + self.scroll + self.specs.bottomOffsetScroll > screenHeight then
+				self.scroll = self.scroll - self.specs.scrollingSpeed
 			end
 			
-			if y + self.scroll + currOffset - 30 < 0 then
-				self.scroll = self.scroll + 5
+			if y + self.scroll + currOffset - self.specs.topOffsetScroll < 0 then
+				self.scroll = self.scroll + self.specs.scrollingSpeed
 			end
 		end
 		
-		videoData.obj:draw(x, y + self.scroll + currOffset, (self.selected == i))
+		if y + self.scroll + currOffset < screenHeight and y + currOffset + videoData.obj.specs.height + self.scroll > 0 then -- if video is inside window
+			videoData.obj:draw(x, y + self.scroll + currOffset, (self.selected == i))
+		else
+			print("Did not render " .. i)
+		end
 		
 		currOffset = currOffset + videoData.obj.specs.height + 10
 	end
