@@ -6,7 +6,7 @@ local VideoList = class{
 		width = 300,
 		height = 90,
 		
-		scrollingSpeed = 5, -- how fast scroll (setting this too high can cause unexpected scrolling offsets)
+		scrollingSpeedFactor = 10, -- the factor which the calculated scrolling speed gets divided through. The higher, the slower scrolling is.
 		topOffsetScroll = 30, -- when scrolling up into selection, how much space between selected video and top
 		bottomOffsetScroll = 20 -- when scrolling down into selection, how much space between selected video and bottom
 	},
@@ -33,18 +33,18 @@ function VideoList:draw(x, y)
 		
 		if self.selected == i then -- if current video is selected
 			if y + currOffset + videoData.obj.specs.height + self.scroll + self.specs.bottomOffsetScroll > screenHeight then
-				self.scroll = self.scroll - self.specs.scrollingSpeed
+				local scrollingSpeed = (y + currOffset + videoData.obj.specs.height + self.scroll + self.specs.bottomOffsetScroll) - screenHeight
+				self.scroll = self.scroll - scrollingSpeed/self.specs.scrollingSpeedFactor
 			end
 			
 			if y + self.scroll + currOffset - self.specs.topOffsetScroll < 0 then
-				self.scroll = self.scroll + self.specs.scrollingSpeed
+				local scrollingSpeed = -(y + self.scroll + currOffset - self.specs.topOffsetScroll)
+				self.scroll = self.scroll + scrollingSpeed/self.specs.scrollingSpeedFactor
 			end
 		end
 		
 		if y + self.scroll + currOffset < screenHeight and y + currOffset + videoData.obj.specs.height + self.scroll > 0 then -- if video is inside window
 			videoData.obj:draw(x, y + self.scroll + currOffset, (self.selected == i))
-		else
-			print("Did not render " .. i)
 		end
 		
 		currOffset = currOffset + videoData.obj.specs.height + 10
@@ -60,8 +60,10 @@ function VideoList:keypressed(key)
 		end
 	elseif key == "down" then
 		self.selected = self.selected + 1
-	elseif key == "s" then
-		self.scroll = self.scroll - 1
+		
+		if self.selected > #self.videos then
+			self.selected = #self.videos
+		end
 	end
 end
 
