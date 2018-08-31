@@ -16,7 +16,11 @@ local TitleBar = class{
 
 function TitleBar:init(text, actions)
 	self.text = love.graphics.newText(fonts.SegoeUI, text)
-	
+	self.actions = {}
+	self:setActions(actions)
+end
+
+function TitleBar:setActions(actions)
 	for i,action in ipairs(actions) do
 		local newAction = {}
 		newAction.icon = love.graphics.newImage('assets/images/icons/icon_' .. action.key .. '.png')
@@ -47,11 +51,11 @@ function TitleBar:draw()
 	local currOffset = 0
 	for i,action in ipairs(self.actions) do
 		love.graphics.setColor(0,0,0)
-		love.graphics.draw(action.label, self.specs.width - currOffset - action.label:getWidth() - 5, 2)
+		love.graphics.draw(action.label, self.specs.width - currOffset - action.label:getWidth() - 7, 2)
 		love.graphics.setColor(255,255,255)
 		love.graphics.draw(action.icon, self.specs.width - currOffset - action.label:getWidth() - 25, 2)
 		
-		currOffset = currOffset + action.label:getWidth() + action.icon:getWidth() + 15
+		currOffset = currOffset + action.label:getWidth() + action.icon:getWidth() + 10
 	end
 end
 
