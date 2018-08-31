@@ -26,7 +26,6 @@ return function(url, params, decodeJSON)
 		url = url .. '?' .. paramsString
 	end
 
-print(url)
 	local requestHandler = io.popen('curl --silent "' .. url ..'"', 'r')
 	local response = requestHandler:read('*all')
 

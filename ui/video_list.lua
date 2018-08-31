@@ -102,7 +102,7 @@ function VideoList:keypressed(key)
 		end
 	elseif key == "j" then
 		love.window.close()
-		os.execute('./playVideo.sh ' .. self.videos[self.selected].url)
+		os.execute('playVideo.sh ' .. self.videos[self.selected].url)
 	end
 end
 

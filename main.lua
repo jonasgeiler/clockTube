@@ -9,8 +9,23 @@ local states = require('states._all')
 
 local currState = ''
 
+function isConnected()
+	local pingHandler = io.popen('ping -q -w1 -c1 google.com &>/dev/null && echo online || echo offline', 'r')
+	local status = pingHandler:read('*all')
+	
+	if status == 'offline' then
+		return false
+	end
+	
+	return true
+end
+
 function love.load()
-	currState = 'home'
+	if isConnected() then
+		currState = 'home'
+	else
+		currState = 'offline'
+	end
 end
 
 function love.draw()
