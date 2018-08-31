@@ -141,8 +141,15 @@ function VideoList:keypressed(key)
 			self.selected.index = 1
 		end
 	elseif key == "j" then
+		local window_width, window_height, window_flags = love.window.getMode( )
 		love.window.close()
-		os.execute('playVideo.sh ' .. self.videos[self.selected.page][self.selected.index].url)
+		os.execute(
+				   'mplayer -framedrop -lavdopts threads=4 -vf scale -zoom -xy 320 -fs -cache 8192 -cookies -cookies-file ~/clockTube/cookie.txt ' ..
+				   '$(youtube-dl -f worst[ext=mp4] -g --cookies ~/clockTube/cookie.txt "' ..
+				   self.videos[self.selected.page][self.selected.index].url ..
+				   '") > ~/mplayer.log 2>&1'
+				  )
+		love.window.setMode(window_width, window_height, window_flags)
 	end
 end
 
