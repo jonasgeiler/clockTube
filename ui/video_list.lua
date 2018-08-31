@@ -17,6 +17,7 @@ local VideoList = class{
 	videos = {},
 	selected = { index = 1, page = 1},
 	scroll = 0,
+	loadingVideos = false,
 	
 	nextPageToken = ''
 }
@@ -114,6 +115,13 @@ function VideoList:keypressed(key)
 		
 		if self.selected.index > #self.videos[self.selected.page] then
 			if self.selected.page == #self.videos then -- page is last page. Load more videos
+				local rectHeight, rectWidth = 50, 100
+				love.graphics.setColor(228,228,228)
+				love.graphics.rectangle('fill', 160-rectWidth/2, 120-rectHeight/2, rectWidth, rectHeight)
+				love.graphics.setColor(0,0,0)
+				love.graphics.print("Loading...", 130, 120-rectHeight/2+20)
+				love.graphics.present()
+				
 				self.videos[self.selected.page + 1] = self:getTrendingVideos()
 				
 				for i,video in ipairs(self.videos[self.selected.page + 1]) do
