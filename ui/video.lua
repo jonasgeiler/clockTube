@@ -23,7 +23,7 @@ local Video = class{
 
 function newImageFromURL(url, name)
 	local rawThumbnailData = http.request(url)
-	local fileData = love.filesystem.newFileData(rawThumbnailData, 'thumbnail.png', 'file')
+	local fileData = love.filesystem.newFileData(rawThumbnailData, name, 'file')
 	local imageData = love.image.newImageData(fileData)
 	return love.graphics.newImage(imageData)
 end

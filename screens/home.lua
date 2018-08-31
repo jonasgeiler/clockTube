@@ -3,6 +3,8 @@ local VideoList = require('ui.video_list')
 local TitleBar = require('ui.title_bar')
 
 local Home = class{
+	activeScreen = '',
+	
 	videoList = nil,
 	titleBar = nil
 }
@@ -40,7 +42,11 @@ function Home:update()
 end
 
 function Home:keypressed(k)
-	self.videoList:keypressed(k)
+	if k == 'i' then
+		self.activeScreen = 'search'
+	else
+		self.videoList:keypressed(k)
+	end
 end
 
 return Home

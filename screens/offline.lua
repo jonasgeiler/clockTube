@@ -1,11 +1,13 @@
 local class = require('lib.class')
 
-local Offline = class{}
+local Offline = class{
+	activeScreen = ''
+}
 
 function Offline:init() end
 
 function Offline:draw()
-	love.graphics.setBackgroundColor(255,255,255)
+	love.graphics.setColor(0,0,0)
 	love.graphics.print("Offline.", 10, 10)
 end
 
