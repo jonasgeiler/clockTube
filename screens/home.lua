@@ -26,8 +26,6 @@ function Home:init()
 			label = 'Select'
 		}
 	})
-	
-	return self
 end
 
 function Home:draw()

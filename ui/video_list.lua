@@ -99,6 +99,10 @@ function VideoList:draw(x, y)
 end
 
 function VideoList:keypressed(key)
+	if self.loadingVideos then
+		return
+	end
+	
 	if key == "up" then
 		self.selected.index = self.selected.index - 1
 		
@@ -115,6 +119,8 @@ function VideoList:keypressed(key)
 		
 		if self.selected.index > #self.videos[self.selected.page] then
 			if self.selected.page == #self.videos then -- page is last page. Load more videos
+				self.loadingVideos = true
+				
 				local rectHeight, rectWidth = 50, 100
 				love.graphics.setColor(228,228,228)
 				love.graphics.rectangle('fill', 160-rectWidth/2, 120-rectHeight/2, rectWidth, rectHeight)
@@ -127,8 +133,10 @@ function VideoList:keypressed(key)
 				for i,video in ipairs(self.videos[self.selected.page + 1]) do
 					self.videos[self.selected.page + 1][i].obj = Video(video)
 				end
-			end
 				
+				self.loadingVideos = false
+			end
+			
 			self.selected.page = self.selected.page + 1
 			self.selected.index = 1
 		end

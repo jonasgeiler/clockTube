@@ -14,7 +14,7 @@ function love.conf(t)
 	t.modules.touch = false
 	
 	t.window.resizable = false
-	t.window.borderless = false
+	t.window.borderless = true
 end
 
 -- Other Project Configuration
