@@ -3,16 +3,16 @@ local VideoList = require('ui.video_list')
 local TitleBar = require('ui.title_bar')
 
 local Home = class{
-	activeScreen = '',
+	activeScreen = nil, -- screen manager
 	
 	videoList = nil,
-	titleBar = nil
+	homeTitleBar = nil
 }
 
 function Home:init()
 	self.videoList = VideoList('trending')
 	
-	self.titleBar = TitleBar('Home', {
+	self.homeTitleBar = TitleBar('Home', {
 		{
 			key = 'A',
 			label = 'Play'
@@ -32,7 +32,7 @@ function Home:draw()
 	love.graphics.setBackgroundColor(255,255,255)
 	
 	self.videoList:draw(10,30)
-	self.titleBar:draw() -- is overlay so draw at the end
+	self.homeTitleBar:draw() -- is overlay so draw at the end
 end
 
 function Home:update()

@@ -11,10 +11,17 @@ function ScreenManager:init(screens, active)
 end
 
 function ScreenManager:check()
-	for _,screen in pairs(self.screens) do
-		if screen.activeScreen ~= '' then
+	for i,screen in pairs(self.screens) do
+		if screen.activeScreen == nil then
+			self.screens[i].activeScreen = self.active
+		end
+		
+		if screen.activeScreen ~= self.active then
 			self.active = screen.activeScreen
-			screen.activeScreen = ''
+			
+			for j,_ in pairs(self.screens) do
+				self.screens[j].activeScreen = self.active
+			end
 		end
 	end
 end
