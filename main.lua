@@ -5,11 +5,29 @@ love.graphics.print("Loading...", 10, 10)
 love.graphics.present()
 --
 
-local screens = require('screens._all')
 local screenManager = nil
 
+function connected()
+	local requestHandler = io.popen('curl --silent "http://example.com"', 'r')
+	local response = requestHandler:read('*all')
+	
+	return (#response > 0)
+end
+
 function love.load()
-	screenManager = require('lib.ScreenManager')(screens, 'home')
+	local screens = {}
+	local initialScreen = 'home'
+	
+	if not connected() then
+		screens = {
+			offline = require('screens.offline')()
+		}
+		initialScreen = 'offline'
+	else
+		screens = require('screens._all')
+	end
+
+	screenManager = require('lib.ScreenManager')(screens, initialScreen)
 end
 
 function love.draw()
