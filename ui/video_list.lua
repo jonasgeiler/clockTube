@@ -10,21 +10,26 @@ local VideoList = class{
 		
 		scrollingSpeedFactor = 10, -- the factor which the calculated scrolling speed gets divided through. The higher, the slower scrolling is.
 		topOffsetScroll = 30, -- when scrolling up into selection, how much space between selected video and top
-		bottomOffsetScroll = 20 -- when scrolling down into selection, how much space between selected video and bottom
+		bottomOffsetScroll = 20, -- when scrolling down into selection, how much space between selected video and bottom
+		
+		videosPerPage = 10
 	},
 	videos = {},
-	selected = 1,
-	scroll = 0
+	selected = { index = 1, page = 1},
+	scroll = 0,
+	
+	nextPageToken = ''
 }
 
-function getTrendingVideos()
+function VideoList:getTrendingVideos()
 	local response = request(
 		'https://www.googleapis.com/youtube/v3/videos', 
 		{
 			key = config.youtubeApiKey,
 			part = 'snippet,statistics',
 			chart = 'mostPopular',
-			maxResults = 10
+			maxResults = self.specs.videosPerPage,
+			pageToken = self.nextPageToken
 		},
 		true
 	)
@@ -42,20 +47,24 @@ function getTrendingVideos()
 		videos[i] = newVideo
 	end
 	
+	self.nextPageToken = response.nextPageToken
+	
 	return videos
 end
 
 function VideoList:init(list, data)
 	if list == 'trending' then
-		self.videos = getTrendingVideos()
+		self.videos[1] = self:getTrendingVideos()
 	elseif list == 'search' then
-		self.videos = getVideosBySearch(data)
+		self.videos[1] = self:getVideosBySearch(data)
 	elseif list == 'user' then
-		self.videos = getVideosByUser(data)
+		self.videos[1] = self:getVideosByUser(data)
 	end
 	
-	for i,videoData in ipairs(self.videos) do
-		self.videos[i].obj = Video(videoData)
+	for pageNum,page in ipairs(self.videos) do
+		for i,video in ipairs(page) do
+			self.videos[pageNum][i].obj = Video(video)
+		end
 	end
 end
 
@@ -65,44 +74,59 @@ function VideoList:draw(x, y)
 	local _,screenHeight = love.graphics.getDimensions()
 	
 	local currOffset = 0
-	for i,videoData in ipairs(self.videos) do
-		
-		if self.selected == i then -- if current video is selected
-			if y + currOffset + videoData.obj.specs.height + self.scroll + self.specs.bottomOffsetScroll > screenHeight then
-				local scrollingSpeed = (y + currOffset + videoData.obj.specs.height + self.scroll + self.specs.bottomOffsetScroll) - screenHeight
-				self.scroll = self.scroll - scrollingSpeed/self.specs.scrollingSpeedFactor
+	for pageNum,page in pairs(self.videos) do
+		for i,video in ipairs(page) do
+			if self.selected.index == i and self.selected.page == pageNum then -- if current video is selected
+				if y + currOffset + video.obj.specs.height + self.scroll + self.specs.bottomOffsetScroll > screenHeight then
+					local scrollingSpeed = (y + currOffset + video.obj.specs.height + self.scroll + self.specs.bottomOffsetScroll) - screenHeight
+					self.scroll = self.scroll - scrollingSpeed/self.specs.scrollingSpeedFactor
+				end
+				
+				if y + self.scroll + currOffset - self.specs.topOffsetScroll < 0 then
+					local scrollingSpeed = -(y + self.scroll + currOffset - self.specs.topOffsetScroll)
+					self.scroll = self.scroll + scrollingSpeed/self.specs.scrollingSpeedFactor
+				end
 			end
 			
-			if y + self.scroll + currOffset - self.specs.topOffsetScroll < 0 then
-				local scrollingSpeed = -(y + self.scroll + currOffset - self.specs.topOffsetScroll)
-				self.scroll = self.scroll + scrollingSpeed/self.specs.scrollingSpeedFactor
+			if y + self.scroll + currOffset < screenHeight and y + currOffset + video.obj.specs.height + self.scroll > 0 then -- if video is inside window
+				video.obj:draw(x, y + self.scroll + currOffset, (self.selected.index == i and self.selected.page == pageNum))
 			end
+			
+			currOffset = currOffset + video.obj.specs.height + 10
 		end
-		
-		if y + self.scroll + currOffset < screenHeight and y + currOffset + videoData.obj.specs.height + self.scroll > 0 then -- if video is inside window
-			videoData.obj:draw(x, y + self.scroll + currOffset, (self.selected == i))
-		end
-		
-		currOffset = currOffset + videoData.obj.specs.height + 10
 	end
 end
 
 function VideoList:keypressed(key)
 	if key == "up" then
-		self.selected = self.selected - 1
+		self.selected.index = self.selected.index - 1
 		
-		if self.selected <= 0 then
-			self.selected = 1
+		if self.selected.index <= 0 then
+			if self.selected.page ~= 1 then
+				self.selected.page = self.selected.page - 1
+				self.selected.index = self.specs.videosPerPage
+			else
+				self.selected.index = 1
+			end
 		end
 	elseif key == "down" then
-		self.selected = self.selected + 1
+		self.selected.index = self.selected.index + 1
 		
-		if self.selected > #self.videos then
-			self.selected = #self.videos
+		if self.selected.index > #self.videos[self.selected.page] then
+			if self.selected.page == #self.videos then -- page is last page. Load more videos
+				self.videos[self.selected.page + 1] = self:getTrendingVideos()
+				
+				for i,video in ipairs(self.videos[self.selected.page + 1]) do
+					self.videos[self.selected.page + 1][i].obj = Video(video)
+				end
+			end
+				
+			self.selected.page = self.selected.page + 1
+			self.selected.index = 1
 		end
 	elseif key == "j" then
 		love.window.close()
-		os.execute('playVideo.sh ' .. self.videos[self.selected].url)
+		os.execute('playVideo.sh ' .. self.videos[self.selected.page][self.selected.index].url)
 	end
 end
 

@@ -2,6 +2,7 @@ local class = require('lib.class')
 local formatNumber = require('lib.formatNumber')
 local fonts = require('assets.fonts._all')
 local http = require('socket.http')
+local utf8 = require('lib.utf8')
 
 local Video = class{
 	username = '',
@@ -31,7 +32,12 @@ end
 function Video:init(data)
 	self.thumbnail = newImageFromURL(data.thumbnail, 'thumbnail.png')
 	self.username = love.graphics.newText(fonts.SegoeUI_light, data.username)
-	self.views = love.graphics.newText(fonts.SegoeUI_light, formatNumber(data.views, 0) .. ' Views')
+	
+	if data.views then -- if videos has views turned off, this will help
+		self.views = love.graphics.newText(fonts.SegoeUI_light, formatNumber(data.views, 0) .. ' Views')
+	else
+		self.views = love.graphics.newText(fonts.SegoeUI_light, 'Views not available')
+	end
 	
 	if data.title:len() > self.specs.title_cut_length then
 		data.title = data.title:sub(0, self.specs.title_cut_length) .. "..."
@@ -41,7 +47,7 @@ function Video:init(data)
 		data.title = data.title:sub(0, self.specs.title_wrap_length) .. "\n" .. data.title:sub(self.specs.title_wrap_length+1)
 	end
 	
-	self.title = love.graphics.newText(fonts.SegoeUI_bold, data.title)
+	self.title = love.graphics.newText(fonts.SegoeUI_bold, utf8.strip(data.title))
 end
 
 function drawDashedLine(x1, y1, x2, y2, min, max)
