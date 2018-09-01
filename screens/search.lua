@@ -2,13 +2,12 @@ local class = require('lib.class')
 local TextInput = require('ui.text_input')
 local TitleBar = require('ui.title_bar')
 
-local Search = class{
+local Search = class {
 	activeScreen = nil, -- screen manager
-	
+
 	inputTitleBar = nil,
 	resultsTitleBar = nil,
 	textInput = nil,
-	
 	inputSearch = true
 }
 
@@ -35,7 +34,7 @@ function Search:init()
 			label = 'Move'
 		}
 	})
-	
+
 	self.resultsTitleBar = TitleBar('Search', {
 		{
 			key = 'A',
@@ -59,8 +58,8 @@ function Search:init()
 end
 
 function Search:draw()
-	love.graphics.setBackgroundColor(255,255,255)
-	
+	love.graphics.setBackgroundColor(255, 255, 255)
+
 	if self.inputSearch then
 		self.textInput:draw()
 		self.inputTitleBar:draw()
@@ -70,21 +69,20 @@ function Search:draw()
 end
 
 function Search:update()
-	
 end
 
 function Search:keypressed(k)
-	if k == 'k' then
-		self.activeScreen = 'home'
-	end
-	
 	if self.inputSearch then
 		self.textInput:keypressed(k)
 	else
+		if k == 'k' then
+			self.activeScreen = 'home'
+		end
+
 		if k == 'i' then
 			self.inputSearch = true
 		end
-		
+
 		self.videoList:keypressed(k)
 	end
 end
