@@ -3,6 +3,7 @@ local fonts = require('assets.fonts._all')
 
 local TextInput = class {
 	inputTitleBar = nil,
+	displayPlaceholder = true,
 	layout = 1,
 	cursor = { x = 1, y = 1 },
 	currInput = '',
@@ -45,7 +46,7 @@ local TextInput = class {
 	texts = {}
 }
 
-function TextInput:init(inputTitleBar)
+function TextInput:init(placeholder, inputTitleBar)
 	self.inputTitleBar = inputTitleBar
 
 	for i, layout in pairs(self.layouts) do
@@ -65,7 +66,7 @@ function TextInput:init(inputTitleBar)
 		end
 	end
 	self.texts['space'] = love.graphics.newText(fonts.SegoeUI_bold, 'Space')
-	self.texts['input'] = love.graphics.newText(fonts.SegoeUI, '')
+	self.texts['input'] = love.graphics.newText(fonts.SegoeUI_big, placeholder)
 end
 
 function TextInput:draw()
@@ -109,11 +110,16 @@ function TextInput:draw()
 
 	-- Input Text Field
 	love.graphics.setColor(169, 169, 169)
-	love.graphics.rectangle('line', 20, 30, 280, 80)
+	love.graphics.rectangle('line', 10, 30, 300, 80)
 
 	-- Input Text
 	love.graphics.setColor(0,0,0)
-	love.graphics.draw(self.texts['input'], 25, 35)
+
+	if self.displayPlaceholder then
+		love.graphics.setColor(192,192,192)
+	end
+
+	love.graphics.draw(self.texts['input'], 15, 35)
 end
 
 function TextInput:keypressed(k)
@@ -134,6 +140,11 @@ function TextInput:keypressed(k)
 	end
 
 	if k == 'j' then
+		if self.displayPlaceholder then
+			self.currInput = ''
+			self.displayPlaceholder = false
+		end
+
 		if self.cursor.y == 5 then
 			self.currInput = self.currInput .. ' '
 		else
@@ -142,9 +153,19 @@ function TextInput:keypressed(k)
 		end
 
 		self.texts['input']:set(self.currInput)
+
+		if self.texts['input']:getWidth()+10 > 300-15 then
+			self.currInput = self.currInput .. "\n"
+			self.texts['input']:set(self.currInput)
+		end
 	end
 
 	if k == 'k' then
+		if self.displayPlaceholder then
+			self.currInput = ''
+			self.displayPlaceholder = false
+		end
+
 		self.currInput = self.currInput:sub(1, #self.currInput-1)
 		self.texts['input']:set(self.currInput)
 	end

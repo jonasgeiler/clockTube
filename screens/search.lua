@@ -54,7 +54,7 @@ function Search:init()
 		}
 	})
 
-	self.textInput = TextInput(self.inputTitleBar)
+	self.textInput = TextInput('Enter Search...', self.inputTitleBar)
 end
 
 function Search:draw()
