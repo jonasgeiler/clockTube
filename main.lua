@@ -1,11 +1,11 @@
 -- LOADING SCREEN --
 love.graphics.clear()
-love.graphics.setBackgroundColor(255,255,255)
+love.graphics.setBackgroundColor(255, 255, 255)
 love.graphics.print("Loading...", 10, 10)
 love.graphics.present()
 --
 
-local screenManager = nil
+local screenManager
 
 function connected()
 	local requestHandler = io.popen('curl --silent "http://example.com"', 'r')
