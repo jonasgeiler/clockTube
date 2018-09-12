@@ -17,7 +17,8 @@ local VideoList = class {
 	selected = { index = 1, page = 1 },
 	scroll = 0,
 	loadingVideos = false,
-	nextPageToken = ''
+	nextPageToken = '',
+	loadNewVideos = nil
 }
 
 function VideoList:processResponse(response, displayViews)
@@ -76,13 +77,16 @@ function VideoList:getVideosBySearch(term)
 	return self:processResponse(response)
 end
 
-function VideoList:init(list, data)
-	if list == 'trending' then
+function VideoList:init(listType, data)
+	if listType == 'trending' then
 		self.videos[1] = self:getTrendingVideos()
-	elseif list == 'search' then
+		self.loadNewVideos = function() return self:getTrendingVideos() end
+	elseif listType == 'search' then
 		self.videos[1] = self:getVideosBySearch(data)
-	elseif list == 'user' then
+		self.loadNewVideos = function() return self:getVideosBySearch(data) end
+	elseif listType == 'user' then
 		self.videos[1] = self:getVideosByUser(data)
+		self.loadNewVideos = function() return self:getVideosByUser(data) end
 	end
 
 	for pageNum, page in ipairs(self.videos) do
@@ -151,7 +155,7 @@ function VideoList:keypressed(key)
 				love.graphics.print("Loading...", 130, 120 - rectHeight / 2 + 20)
 				love.graphics.present()
 
-				self.videos[self.selected.page + 1] = self:getTrendingVideos()
+				self.videos[self.selected.page + 1] = self:loadNewVideos()
 
 				for i, video in ipairs(self.videos[self.selected.page + 1]) do
 					self.videos[self.selected.page + 1][i].obj = Video(video)

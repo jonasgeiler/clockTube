@@ -17,7 +17,7 @@ end
 function love.load()
 	local screens = {}
 	local initialScreen = 'home'
-	
+
 	if not connected() then
 		screens = {
 			offline = require('screens.offline')()

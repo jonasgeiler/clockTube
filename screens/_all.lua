@@ -1,4 +1,4 @@
 return {
-	home = require('screens.home')(),
-	search = require('screens.search')()
+	search = require('screens.search')(),
+	--home = require('screens.home')()
 }
