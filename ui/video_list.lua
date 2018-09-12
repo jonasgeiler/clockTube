@@ -20,6 +20,30 @@ local VideoList = class {
 	nextPageToken = ''
 }
 
+function VideoList:processResponse(response, displayViews)
+	local videos = {}
+
+	for i, video in pairs(response.items) do
+		local newVideo = {}
+		newVideo.title = video.snippet.title
+		newVideo.username = video.snippet.channelTitle
+		newVideo.thumbnail = video.snippet.thumbnails.default.url
+		if type(video.id) == "table" then
+			video.id = video.id.videoId
+		end
+		newVideo.url = 'https://www.youtube.com/watch?v=' .. video.id
+		if displayViews then
+			newVideo.views = tonumber(video.statistics.viewCount)
+		end
+
+		videos[i] = newVideo
+	end
+
+	self.nextPageToken = response.nextPageToken
+
+	return videos
+end
+
 function VideoList:getTrendingVideos()
 	local response = request('https://www.googleapis.com/youtube/v3/videos',
 		{
@@ -31,22 +55,25 @@ function VideoList:getTrendingVideos()
 		},
 		true)
 
-	local videos = {}
+	return self:processResponse(response, true)
+end
 
-	for i, video in pairs(response.items) do
-		local newVideo = {}
-		newVideo.title = video.snippet.title
-		newVideo.username = video.snippet.channelTitle
-		newVideo.thumbnail = video.snippet.thumbnails.default.url
-		newVideo.views = tonumber(video.statistics.viewCount)
-		newVideo.url = 'https://www.youtube.com/watch?v=' .. video.id
+function VideoList:getVideosBySearch(term)
+	local response = request('https://www.googleapis.com/youtube/v3/search',
+		{
+			key = config.youtubeApiKey,
+			q = term,
+			part = 'snippet',
+			maxResults = self.specs.videosPerPage,
+			pageToken = self.nextPageToken,
+			type = 'video',
+			videoDimension = '2d',
+			videoEmbeddable = 'true',
+			videoSyndicated = 'true'
+		},
+		true)
 
-		videos[i] = newVideo
-	end
-
-	self.nextPageToken = response.nextPageToken
-
-	return videos
+	return self:processResponse(response)
 end
 
 function VideoList:init(list, data)

@@ -1,6 +1,7 @@
 local class = require('lib.class')
 local TextInput = require('ui.text_input')
 local TitleBar = require('ui.title_bar')
+local VideoList = require('ui.video_list')
 
 local Search = class {
 	activeScreen = nil, -- screen manager
@@ -65,14 +66,24 @@ function Search:draw()
 		self.inputTitleBar:draw()
 	else
 		self.resultsTitleBar:draw()
+		self.videoList:draw(10, 30)
 	end
 end
 
-function Search:update()
+function Search:update(dt)
+	if self.inputSearch then
+		self.textInput:update(dt)
+	end
 end
 
 function Search:keypressed(k)
 	if self.inputSearch then
+		if k == 'i' then
+			self.inputSearch = false
+			
+			self.videoList = VideoList('search', self.textInput.currInput)
+		end
+		
 		self.textInput:keypressed(k)
 	else
 		if k == 'k' then
@@ -82,7 +93,7 @@ function Search:keypressed(k)
 		if k == 'i' then
 			self.inputSearch = true
 		end
-
+		
 		self.videoList:keypressed(k)
 	end
 end

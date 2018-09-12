@@ -13,8 +13,7 @@ local Video = class {
 	specs = {
 		width = 300,
 		height = 90,
-		title_wrap_length = 32, -- when to add a newline
-		title_cut_length = 60, -- when to cut the title and add "..."
+		text_width = 175, -- max width of the title and username. Adds newline if exceeds
 
 		border_padding = 3 -- space between video box and selected-border
 	}
@@ -28,24 +27,41 @@ function newImageFromURL(url, name)
 end
 
 function Video:init(data)
+	-- Thumbnail
 	self.thumbnail = newImageFromURL(data.thumbnail, 'thumbnail.png')
-	self.username = love.graphics.newText(fonts.SegoeUI_light, data.username)
 
-	if data.views then -- if videos has views turned off, this will help
+	-- Views count
+	if data.views then -- if video return no views count
 		self.views = love.graphics.newText(fonts.SegoeUI_light, formatNumber(data.views, 0) .. ' Views')
 	else
-		self.views = love.graphics.newText(fonts.SegoeUI_light, 'Views not available')
+		self.views = love.graphics.newText(fonts.SegoeUI_light, '')
 	end
-
-	if data.title:len() > self.specs.title_cut_length then
-		data.title = data.title:sub(0, self.specs.title_cut_length) .. "..."
+	
+	-- Username
+	local _, wrappedUsername = fonts.SegoeUI_bold:getWrap(data.username, self.specs.text_width)
+	
+	local newUsername = wrappedUsername[1]
+	if #wrappedUsername > 1 then -- if the username got wrapped ...
+		newUsername = newUsername:sub(0, #newUsername - 3) .. "..." -- add 3 dots (...)
 	end
+	self.username = love.graphics.newText(fonts.SegoeUI_light, newUsername)
 
-	if data.title:len() > self.specs.title_wrap_length then
-		data.title = data.title:sub(0, self.specs.title_wrap_length) .. "\n" .. data.title:sub(self.specs.title_wrap_length + 1)
+	-- Title
+	data.title = utf8.strip(data.title)
+	local _, wrappedTitle = fonts.SegoeUI_bold:getWrap(data.title, self.specs.text_width)
+	
+	if #wrappedTitle >= 3 then -- if the title got wrapped 3 times
+		wrappedTitle[2] = wrappedTitle[2]:sub(0, #wrappedTitle[2] - 3) .. "..." -- add 3 dots (...)
 	end
-
-	self.title = love.graphics.newText(fonts.SegoeUI_bold, utf8.strip(data.title))
+	
+	local newTitle = ""
+	for lineNum,line in pairs(wrappedTitle) do
+		if lineNum <= 2 then
+			newTitle = newTitle .. line .. "\n"
+		end
+	end
+	
+	self.title = love.graphics.newText(fonts.SegoeUI_bold, newTitle)
 end
 
 function drawDashedLine(x1, y1, x2, y2, min, max)

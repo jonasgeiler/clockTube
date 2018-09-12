@@ -12,7 +12,10 @@ local TextInput = class {
 		keyboardRows = 4,
 		keyWidth = 29.75,
 		keyHeight = 22,
-		keyboardY = 119
+		keyboardY = 119,
+		
+		maxInputLength = 60,
+		cursorColor = { 192,192,192 }
 	},
 	layouts = {
 		{
@@ -118,25 +121,53 @@ function TextInput:draw()
 	if self.displayPlaceholder then
 		love.graphics.setColor(192,192,192)
 	end
-
+	
 	love.graphics.draw(self.texts['input'], 15, 35)
+end
+
+function TextInput:update(dt)
+	if self.displayPlaceholder then
+		return
+	end
+	
+	if math.floor(love.timer.getTime()) % 2 > 0 then
+		self.texts['input']:setf(self.currInput .. '|', 300 - 10, 'left')
+	else
+		self.texts['input']:setf(self.currInput, 300 - 10, 'left')
+	end
 end
 
 function TextInput:keypressed(k)
 	if k == 'up' then
 		self.cursor.y = self.cursor.y - 1
+		
+		if self.cursor.y < 1 then
+			self.cursor.y = 1
+		end
 	end
 
 	if k == 'down' then
 		self.cursor.y = self.cursor.y + 1
+		
+		if self.cursor.y > 5 then
+			self.cursor.y = 5
+		end
 	end
 
-	if k == 'left' then
+	if k == 'left' and self.cursor.y ~= 5 then
 		self.cursor.x = self.cursor.x - 1
+		
+		if self.cursor.x < 1 then
+			self.cursor.x = 1
+		end
 	end
 
-	if k == 'right' then
+	if k == 'right' and self.cursor.y ~= 5 then
 		self.cursor.x = self.cursor.x + 1
+		
+		if self.cursor.x > 10 then
+			self.cursor.x = 10
+		end
 	end
 
 	if k == 'j' then
@@ -151,13 +182,8 @@ function TextInput:keypressed(k)
 			local currLayout = self.layouts[self.layout].rows
 			self.currInput = self.currInput .. currLayout(self.cursor.x, self.cursor.y)
 		end
-
-		self.texts['input']:set(self.currInput)
-
-		if self.texts['input']:getWidth()+10 > 300-15 then
-			self.currInput = self.currInput .. "\n"
-			self.texts['input']:set(self.currInput)
-		end
+		
+		self.currInput = self.currInput:sub(0, self.specs.maxInputLength)
 	end
 
 	if k == 'k' then
@@ -167,7 +193,6 @@ function TextInput:keypressed(k)
 		end
 
 		self.currInput = self.currInput:sub(1, #self.currInput-1)
-		self.texts['input']:set(self.currInput)
 	end
 
 	if k == 'u' then
