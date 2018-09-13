@@ -78,6 +78,13 @@ function Search:keypressed(k)
 		if k == 'i' then
 			self.inputSearch = false
 			
+			local rectHeight, rectWidth = 50, 100
+			love.graphics.setColor(228, 228, 228)
+			love.graphics.rectangle('fill', 160 - rectWidth / 2, 120 - rectHeight / 2, rectWidth, rectHeight)
+			love.graphics.setColor(0, 0, 0)
+			love.graphics.print("Loading...", 130, 120 - rectHeight / 2 + 20)
+			love.graphics.present()
+			
 			self.videoList = VideoList('search', self.textInput.currInput)
 		end
 		
