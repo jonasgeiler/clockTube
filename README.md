@@ -23,11 +23,11 @@ If there is an error message, please also provide the ``log.txt`` file, which is
 
 ## FAQ
 
-# What is a Gameshell? Can you eat that?
+### What is a Gameshell? Can you eat that?
 
 It's a really cool handheld game-console!  
 Look here for more info: https://www.clockworkpi.com/
 
-# How does video-playback work?
+### How does video-playback work?
 
 I'm using mplayer in combination with youtube-dl, to stream directly from a YouTube URL (although it's really slow, maybe this will change) 
