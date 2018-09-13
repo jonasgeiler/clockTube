@@ -1,5 +1,5 @@
 # clockTube
-A simple YouTube Client for Gameshell - Browse and view Videos directly on your Gameshell!
+A simple YouTube Client - Browse and view Videos directly on your Gameshell!
 
 ## Requirements
 
