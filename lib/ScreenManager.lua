@@ -1,3 +1,7 @@
+-- written by Skayo
+-- feel free to use!
+-- (requires hump.class or similar + a <class>.active variable)
+
 local class = require('lib.class')
 
 local ScreenManager = class {

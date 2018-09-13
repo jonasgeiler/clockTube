@@ -5,6 +5,10 @@ love.graphics.print("Loading...", 10, 10)
 love.graphics.present()
 --
 
+-- this fixes compatibility for LÖVE 0.10.2 colors (0-255 instead of 0-1)
+dofile('lib/compat.lua')
+--
+
 local screenManager
 
 function connected()
