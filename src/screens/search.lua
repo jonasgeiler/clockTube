@@ -65,8 +65,8 @@ function Search:draw()
 		self.textInput:draw()
 		self.inputTitleBar:draw()
 	else
-		self.resultsTitleBar:draw()
 		self.videoList:draw(10, 30)
+		self.resultsTitleBar:draw()
 	end
 end
 
