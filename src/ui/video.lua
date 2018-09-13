@@ -5,11 +5,6 @@ local http = require('socket.http')
 local utf8 = require('lib.utf8')
 
 local Video = class {
-	username = '',
-	views = 0,
-	title = '',
-	thumbnail = '',
-	url = '',
 	specs = {
 		width = 300,
 		height = 90,

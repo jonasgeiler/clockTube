@@ -4,10 +4,7 @@
 
 local class = require('lib.class')
 
-local ScreenManager = class {
-	active = '',
-	screens = {}
-}
+local ScreenManager = class {}
 
 function ScreenManager:init(screens, active)
 	self.active = active

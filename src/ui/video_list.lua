@@ -12,13 +12,7 @@ local VideoList = class {
 		bottomOffsetScroll = 20, -- when scrolling down into selection, how much space between selected video and bottom
 
 		videosPerPage = 10
-	},
-	videos = {},
-	selected = { index = 1, page = 1 },
-	scroll = 0,
-	loadingVideos = false,
-	nextPageToken = '',
-	loadNewVideos = nil
+	}
 }
 
 function VideoList:processResponse(response, displayViews)
@@ -78,6 +72,12 @@ function VideoList:getVideosBySearch(term)
 end
 
 function VideoList:init(listType, data)
+	self.selected = { index = 1, page = 1 }
+	self.scroll = 0
+	self.loadingVideos = false
+	self.nextPageToken = ''
+	
+	self.videos = {}
 	if listType == 'trending' then
 		self.videos[1] = self:getTrendingVideos()
 		self.loadNewVideos = function() return self:getTrendingVideos() end

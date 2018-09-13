@@ -4,15 +4,12 @@ local TitleBar = require('ui.title_bar')
 local VideoList = require('ui.video_list')
 
 local Search = class {
-	activeScreen = nil, -- screen manager
-
-	inputTitleBar = nil,
-	resultsTitleBar = nil,
-	textInput = nil,
-	inputSearch = true
+	activeScreen = nil -- screen manager
 }
 
 function Search:init()
+	self.inputSearch = true
+	
 	self.inputTitleBar = TitleBar('Search', {
 		{
 			key = 'A',

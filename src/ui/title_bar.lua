@@ -7,10 +7,7 @@ local TitleBar = class {
 		height = 20,
 		x = 0,
 		y = 0
-	},
-	icons = {},
-	text = 'clockTube',
-	actions = {}
+	}
 }
 
 function TitleBar:init(text, actions)

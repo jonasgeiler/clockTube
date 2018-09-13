@@ -3,10 +3,7 @@ local VideoList = require('ui.video_list')
 local TitleBar = require('ui.title_bar')
 
 local Home = class {
-	activeScreen = nil, -- screen manager
-
-	videoList = nil,
-	homeTitleBar = nil
+	activeScreen = nil -- screen manager
 }
 
 function Home:init()

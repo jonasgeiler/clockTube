@@ -1,7 +1,7 @@
 local class = require('lib.class')
 
 local Offline = class {
-	activeScreen = nil, -- screen manager
+	activeScreen = nil -- screen manager
 }
 
 function Offline:init() end

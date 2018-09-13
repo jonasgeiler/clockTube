@@ -2,11 +2,6 @@ local class = require('lib.class')
 local fonts = require('assets.fonts._all')
 
 local TextInput = class {
-	inputTitleBar = nil,
-	displayPlaceholder = true,
-	layout = 1,
-	cursor = { x = 1, y = 1 },
-	currInput = '',
 	specs = {
 		keyboardCols = 10,
 		keyboardRows = 4,
@@ -14,8 +9,7 @@ local TextInput = class {
 		keyHeight = 22,
 		keyboardY = 119,
 		
-		maxInputLength = 60,
-		cursorColor = { 192,192,192 }
+		maxInputLength = 60
 	},
 	layouts = {
 		{
@@ -45,11 +39,16 @@ local TextInput = class {
 				'|=*/+-@_&.',
 			}
 		}
-	},
-	texts = {}
+	}
 }
 
 function TextInput:init(placeholder, inputTitleBar)
+	self.texts = {}
+	self.displayPlaceholder = true
+	self.layout = 1
+	self.cursor = { x = 1, y = 1 }
+	self.currInput = ''
+	
 	self.inputTitleBar = inputTitleBar
 
 	for i, layout in pairs(self.layouts) do
