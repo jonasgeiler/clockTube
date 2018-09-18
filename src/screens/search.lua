@@ -1,7 +1,7 @@
 local class = require('lib.class')
-local TextInput = require('ui.text_input')
-local TitleBar = require('ui.title_bar')
-local VideoList = require('ui.video_list')
+local TextInput = require('ui.textInput')
+local TitleBar = require('ui.titleBar')
+local VideoList = require('ui.videoList')
 
 local Search = class {
 	activeScreen = nil -- screen manager
@@ -85,7 +85,7 @@ function Search:keypressed(k)
 			love.graphics.print("Loading...", 130, 120 - rectHeight / 2 + 20)
 			love.graphics.present()
 			
-			self.videoList = VideoList('search', self.textInput.currInput)
+			self.videoList = VideoList('search', "gronkh")
 		end
 		
 		self.textInput:keypressed(k)

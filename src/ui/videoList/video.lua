@@ -1,8 +1,8 @@
 local class = require('lib.class')
 local formatNumber = require('lib.formatNumber')
 local fonts = require('assets.fonts._all')
-local http = require('socket.http')
 local utf8 = require('lib.utf8')
+local utils = require('lib.utils')
 
 local Video = class {
 	specs = {
@@ -14,16 +14,9 @@ local Video = class {
 	}
 }
 
-function newImageFromURL(url, name)
-	local rawThumbnailData = http.request(url)
-	local fileData = love.filesystem.newFileData(rawThumbnailData, name, 'file')
-	local imageData = love.image.newImageData(fileData)
-	return love.graphics.newImage(imageData)
-end
-
 function Video:init(data)
 	-- Thumbnail
-	self.thumbnail = newImageFromURL(data.thumbnail, 'thumbnail.png')
+	self.thumbnail = utils.newImageFromURL(data.thumbnail, 'thumbnail.png')
 
 	-- Views count
 	if data.views then -- if video return no views count
@@ -33,7 +26,7 @@ function Video:init(data)
 	end
 	
 	-- Username
-	local _, wrappedUsername = fonts.SegoeUI_bold:getWrap(data.username, self.specs.text_width)
+	local _, wrappedUsername = fonts.SegoeUI_light:getWrap(data.username, self.specs.text_width)
 	
 	local newUsername = wrappedUsername[1]
 	if #wrappedUsername > 1 then -- if the username got wrapped ...
@@ -59,29 +52,6 @@ function Video:init(data)
 	self.title = love.graphics.newText(fonts.SegoeUI_bold, newTitle)
 end
 
-function drawDashedLine(x1, y1, x2, y2, min, max)
-	min = min or 0
-	max = max or 8
-
-	love.graphics.setPointSize(2)
-
-	local x, y = x2 - x1, y2 - y1
-	local len = math.sqrt(x ^ 2 + y ^ 2)
-	local stepx, stepy = x / len, y / len
-	x = x1
-	y = y1
-
-	for i = 1, len do
-		local lastDigit = tonumber(tostring(i):sub(-1))
-		if lastDigit > min and lastDigit < max then
-			love.graphics.points(x, y)
-		end
-
-		x = x + stepx
-		y = y + stepy
-	end
-end
-
 function Video:draw(x, y, selected)
 	-- Thumbnail
 	love.graphics.setColor(255, 255, 255, 255)
@@ -96,10 +66,10 @@ function Video:draw(x, y, selected)
 	-- Selection Border
 	if selected then
 		love.graphics.setColor(51, 166, 255)
-		drawDashedLine(x - self.specs.border_padding, y - self.specs.border_padding, x + self.specs.width + self.specs.border_padding, y - self.specs.border_padding)
-		drawDashedLine(x - self.specs.border_padding - 1, y - self.specs.border_padding, x - self.specs.border_padding - 1, y + self.specs.height + self.specs.border_padding)
-		drawDashedLine(x - self.specs.border_padding - 1, y + self.specs.height + self.specs.border_padding + 1, x + self.specs.width + self.specs.border_padding + 1, y + self.specs.height + self.specs.border_padding + 1)
-		drawDashedLine(x + self.specs.width + self.specs.border_padding, y - self.specs.border_padding, x + self.specs.width + self.specs.border_padding, y + self.specs.height + self.specs.border_padding)
+		utils.drawDashedLine(x - self.specs.border_padding, y - self.specs.border_padding, x + self.specs.width + self.specs.border_padding, y - self.specs.border_padding)
+		utils.drawDashedLine(x - self.specs.border_padding - 1, y - self.specs.border_padding, x - self.specs.border_padding - 1, y + self.specs.height + self.specs.border_padding)
+		utils.drawDashedLine(x - self.specs.border_padding - 1, y + self.specs.height + self.specs.border_padding + 1, x + self.specs.width + self.specs.border_padding + 1, y + self.specs.height + self.specs.border_padding + 1)
+		utils.drawDashedLine(x + self.specs.width + self.specs.border_padding, y - self.specs.border_padding, x + self.specs.width + self.specs.border_padding, y + self.specs.height + self.specs.border_padding)
 	end
 end
 

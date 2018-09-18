@@ -1,7 +1,8 @@
 local class = require('lib.class')
 local config = require('conf')
 local request = require('lib.request')
-local Video = require('ui.video')
+local Video = require('ui.videoList.video')
+local Channel = require('ui.videoList.channel')
 
 local VideoList = class {
 	specs = {
@@ -15,23 +16,44 @@ local VideoList = class {
 	}
 }
 
+function VideoList:newVideo(video, displayViews)
+	local newVideo = {}
+	
+	newVideo.title = video.snippet.title
+	newVideo.username = video.snippet.channelTitle
+	newVideo.thumbnail = video.snippet.thumbnails.default.url
+	if type(video.id) == "table" then
+		video.id = video.id.videoId
+	end
+	newVideo.url = 'https://www.youtube.com/watch?v=' .. video.id
+	if displayViews then
+		newVideo.views = tonumber(video.statistics.viewCount)
+	end
+	
+	return newVideo
+end
+
+function VideoList:newChannel(channel)
+	local newChannel = {}
+	
+	newChannel.username = channel.snippet.title
+	newChannel.avatar = channel.snippet.thumbnails.default.url
+	newChannel.channelId = channel.id.channelId	
+	newChannel.description = channel.snippet.description
+	
+	return newChannel
+end
+
 function VideoList:processResponse(response, displayViews)
 	local videos = {}
 
-	for i, video in pairs(response.items) do
-		local newVideo = {}
-		newVideo.title = video.snippet.title
-		newVideo.username = video.snippet.channelTitle
-		newVideo.thumbnail = video.snippet.thumbnails.default.url
-		if type(video.id) == "table" then
-			video.id = video.id.videoId
+	for i, item in pairs(response.items) do
+		if type(item.id) == "table" and item.id.kind == "youtube#channel" then
+			videos[i] = self:newChannel(item)
+			videos[i].isChannel = true
+		else
+			videos[i] = self:newVideo(item, displayViews)
 		end
-		newVideo.url = 'https://www.youtube.com/watch?v=' .. video.id
-		if displayViews then
-			newVideo.views = tonumber(video.statistics.viewCount)
-		end
-
-		videos[i] = newVideo
 	end
 
 	self.nextPageToken = response.nextPageToken
@@ -61,10 +83,7 @@ function VideoList:getVideosBySearch(term)
 			part = 'snippet',
 			maxResults = self.specs.videosPerPage,
 			pageToken = self.nextPageToken,
-			type = 'video',
-			videoDimension = '2d',
-			videoEmbeddable = 'true',
-			videoSyndicated = 'true'
+			type = 'video,channel'
 		},
 		true)
 
@@ -90,8 +109,12 @@ function VideoList:init(listType, data)
 	end
 
 	for pageNum, page in ipairs(self.videos) do
-		for i, video in ipairs(page) do
-			self.videos[pageNum][i].obj = Video(video)
+		for i, item in ipairs(page) do
+			if self.videos[pageNum][i].isChannel then
+				self.videos[pageNum][i].obj = Channel(item)
+			else
+				self.videos[pageNum][i].obj = Video(item)
+			end
 		end
 	end
 end

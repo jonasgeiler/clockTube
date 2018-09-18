@@ -1,6 +1,6 @@
 local class = require('lib.class')
-local VideoList = require('ui.video_list')
-local TitleBar = require('ui.title_bar')
+local TitleBar = require('ui.titleBar')
+local VideoList = require('ui.videoList')
 
 local Home = class {
 	activeScreen = nil -- screen manager
