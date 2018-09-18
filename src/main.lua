@@ -1,7 +1,8 @@
 -- LOADING SCREEN --
-love.graphics.clear()
-love.graphics.setBackgroundColor(255, 255, 255)
-love.graphics.print("Loading...", 10, 10)
+love.graphics.clear(255,255,255)
+local w, h = love.window.getMode()
+local clockTubeLogo = love.graphics.newImage("assets/images/clockTube-Logo.png")
+love.graphics.draw(clockTubeLogo, w / 2 - clockTubeLogo:getWidth() / 2, h / 2 - clockTubeLogo:getHeight() / 2)
 love.graphics.present()
 --
 
