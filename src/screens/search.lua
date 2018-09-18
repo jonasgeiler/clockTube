@@ -85,7 +85,7 @@ function Search:keypressed(k)
 			love.graphics.print("Loading...", 130, 120 - rectHeight / 2 + 20)
 			love.graphics.present()
 			
-			self.videoList = VideoList('search', "gronkh")
+			self.videoList = VideoList('search', self.textInput.currInput)
 		end
 		
 		self.textInput:keypressed(k)
