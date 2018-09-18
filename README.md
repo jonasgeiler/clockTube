@@ -31,3 +31,12 @@ Look here for more info: https://www.clockworkpi.com/
 ### How does video-playback work?
 
 I'm using mplayer in combination with youtube-dl, to stream directly from a YouTube URL (although it's really slow, maybe this will change) 
+
+## TODO
+- ~~Homepage (Trending Videos)~~
+- ~~Search for Videos~~
+- Search for Users
+- View the profile of a user
+- View Videos of a User
+- Login/Authentication
+- Settings
