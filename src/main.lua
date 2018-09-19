@@ -21,7 +21,7 @@ end
 
 function love.load()
 	local screens = {}
-	local initialScreen = 'home'
+	local initialScreen = ''
 
 	if not connected() then
 		screens = {
@@ -30,9 +30,13 @@ function love.load()
 		initialScreen = 'offline'
 	else
 		screens = require('screens._all')
+		initialScreen = 'home'
 	end
 
 	screenManager = require('lib.ScreenManager')(screens, initialScreen)
+	
+	-- Additional config
+	love.keyboard.setKeyRepeat(true) -- Repeat love.keypressed when long pressing
 end
 
 function love.draw()
