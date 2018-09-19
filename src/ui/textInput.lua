@@ -141,7 +141,7 @@ function TextInput:keypressed(k)
 		self.cursor.y = self.cursor.y - 1
 		
 		if self.cursor.y < 1 then
-			self.cursor.y = 1
+			self.cursor.y = 5
 		end
 	end
 
@@ -149,7 +149,7 @@ function TextInput:keypressed(k)
 		self.cursor.y = self.cursor.y + 1
 		
 		if self.cursor.y > 5 then
-			self.cursor.y = 5
+			self.cursor.y = 1
 		end
 	end
 
@@ -157,7 +157,7 @@ function TextInput:keypressed(k)
 		self.cursor.x = self.cursor.x - 1
 		
 		if self.cursor.x < 1 then
-			self.cursor.x = 1
+			self.cursor.x = 10
 		end
 	end
 
@@ -165,7 +165,7 @@ function TextInput:keypressed(k)
 		self.cursor.x = self.cursor.x + 1
 		
 		if self.cursor.x > 10 then
-			self.cursor.x = 10
+			self.cursor.x = 1
 		end
 	end
 
